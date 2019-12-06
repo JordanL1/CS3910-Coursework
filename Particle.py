@@ -28,3 +28,22 @@ class Particle:
             + self.SOCIAL_COEFFICIENT * random.random() * (gbest[i] - self.position[i])
         
         return new_velocity
+
+    def calculate_new_position(self):
+        new_position = []
+
+        for i in range(len(self.position)):
+            new_position[i] = self.position[i] + self.velocity[i]
+
+        return new_position
+
+    def update_particle(self, gbest):
+        self.velocity = self.calculate_new_velocity(gbest)
+        self.position = self.calculate_new_position()
+        new_cost = self.pallet_problem.evaluate_cost(self.position)
+
+        if new_cost < self.pbest_cost:
+            self.pbest = self.position
+            self.pbest_cost = new_cost
+
+        return position
