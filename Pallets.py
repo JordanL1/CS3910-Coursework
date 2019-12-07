@@ -17,7 +17,6 @@ class Pallets:
         for i in range(13):
             weighted_values.append(weights[i] * day[i+1])
         
-        print(weighted_values)
         estimate = sum(weighted_values)
         
         return abs(estimate - day[0])
@@ -26,7 +25,7 @@ class Pallets:
         params = []
 
         for i in range(13):
-            params.append(random.random())
+            params.append(random.uniform(-10, 10))
 
         return params
 
