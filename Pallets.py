@@ -1,10 +1,16 @@
 import random
+import math
 
 class Pallets:
     def __init__(self, file_name):
         self.days = self.get_data_from_file(file_name)
 
     def evaluate_cost(self, weights):
+        """
+        Given a list of 13 weights, calculate the average error in estimating demand when these weights are
+        combined, in list order, with the 13 demand measurements over for each day, over all days included
+        in the data provided.
+        """
         costs = []
         for day in self.days:
             costs.append(self.evaluate_cost_for_one_day(day, weights))
@@ -12,6 +18,11 @@ class Pallets:
         return sum(costs) / len(self.days)
 
     def evaluate_cost_for_one_day(self, day, weights):
+        """
+        Given one day, consisting of the known demand for the day followed by 13 demand measurements for that
+        day, evaluate the error in estimating demand by combining the supplied 13 weights, in list order, with the demand
+        measurements and then calculating the difference between the resulting estimation and the known demand.
+        """
         weighted_values = []
 
         for i in range(13):
@@ -22,6 +33,10 @@ class Pallets:
         return abs(estimate - day[0])
 
     def generate_random_solution(self):
+        """
+        Generate a list of 13 random floating point values, where -1 <= value <= 1, representing a possible solution to the
+        pallet demand problem.
+        """
         params = []
 
         for i in range(13):
@@ -30,10 +45,10 @@ class Pallets:
         return params
 
 
-
     def get_data_from_file(self, file_name):
-        """ Given a CSV filename, return a dictionary mapping a city name or ID
-        to a tuple containing its 2D coordinates.
+        """ Given the name of a CSV file containing data for the pallets problem, return a list *days*
+        of days. Each day is a list consisting of the known demand at the end of the day (index 0) followed
+        by 13 demand measurements (indices 1-13).
         """
         csv = open(file_name, 'r')
         days = []
@@ -42,11 +57,11 @@ class Pallets:
             for i in range(len(day)):
                 day[i] = float(day[i])
             days.append(day)   
-        print(f"Data from file: {days}")
+        #print(f"Data from file: {days}")
         return days
 
     def random_search(self, iterations):
-        best_cost = 99999
+        best_cost = math.inf
         best_solution = []
 
         for i in range(iterations):
@@ -85,8 +100,8 @@ class Pallets:
 
 
     def find_neighbourhood(self, solution):
-        """Given a solution, find thirteen neighbours where each neighbour has
-        one value in the list perturbed."""
+        """Given a solution, find thirteen neighbours by copying the original solution
+        and perturbing the value at index i, for 0 <= i < 13."""
         neighbours = []
 
         for i in range(len(solution)):
